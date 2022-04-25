@@ -6,4 +6,4 @@ services:
       context: "SB.BlazorServer"
     container_name: "supportbuddy-frontend-container"
     ports:
-      - "8080:80"
+      - "8010:80"
