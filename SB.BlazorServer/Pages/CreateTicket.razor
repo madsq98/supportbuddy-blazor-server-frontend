@@ -34,17 +34,17 @@
             <input @bind="Subject" id="subject" type="text" class="form-control" placeholder="Ticket subject..."/>
         </div>
         <label for="message" class="form-label">Message:</label>
-        <textarea @bind="Message" id="message" class="form-control" placeholder="Ticket message..." rows="4"></textarea>
+        <textarea @bind="Message" id="message" class="form-control mb-3" placeholder="Ticket message..." rows="4"></textarea>
     </div>
 </div>
 <div class="row">
     <div class="col-12 col-md-6">
-        <button @onclick="@(async () => await DoSubmit())" class="btn btn-primary w-100">
+        <button @onclick="@(async () => await DoSubmit())" class="btn btn-primary w-100 mb-3">
             Submit
         </button>
     </div>
     <div class="col-12 col-md-6">
-        <button @onclick="DoReset" class="btn btn-danger w-100">
+        <button @onclick="DoReset" class="btn btn-danger w-100 mb-3">
             Reset
         </button>
     </div>
