@@ -1,5 +1,7 @@
 ﻿@inject NavigationManager NavigationManager
-@inject Blazored.LocalStorage.ILocalStorageService localStorage
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inject ProtectedLocalStorage BrowserStorage
+@inject ProtectedSessionStorage SessionStorage
 
 <Router AppAssembly="@typeof(App).Assembly">
     <Found Context="routeData">
@@ -18,7 +20,12 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        var loginString = await localStorage.GetItemAsync<string>("AuthString");
+        var resultLocalStorage = await BrowserStorage.GetAsync<string>("authstring");
+        var resultSessionStorage = await SessionStorage.GetAsync<string>("authstring");
+
+        var loginString = resultLocalStorage.Success ? resultLocalStorage.Value : "";
+        loginString = loginString.Length <= 0 ? (resultSessionStorage.Success ? resultSessionStorage.Value : "") : loginString;
+        
         if (loginString == null || loginString.Length <= 0)
         {
             NavigationManager.NavigateTo("/login");

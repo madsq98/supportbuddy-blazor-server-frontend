@@ -3,7 +3,9 @@
 @layout EmptyLayout
 @inject AuthService AuthService
 @inject NavigationManager NavigationManager
-@inject Blazored.LocalStorage.ILocalStorageService localStorage
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inject ProtectedLocalStorage BrowserStorage
+@inject ProtectedSessionStorage SessionStorage
 
 <PageTitle>SupportBuddy - Log In</PageTitle>
 
@@ -67,7 +69,7 @@
 
     <div class="checkbox mb-3">
       <label>
-        <input type="checkbox" value="remember-me"> Remember me
+        <input @bind="Remember" type="checkbox" value="remember-me"> Remember me
       </label>
     </div>
   <button @onclick="@(async () => await DoLogin())" class="w-100 btn btn-lg btn-primary mb-5" type="submit">Sign in</button>
@@ -85,6 +87,7 @@
 @code {
   private string? Username;
   private string? Password;
+  private bool Remember;
 
   private bool ErrorState = false;
   private string HideError => ErrorState ? "" : "d-none";
@@ -108,7 +111,10 @@
       {
         //Login succesfull
 
-        await localStorage.SetItemAsync("AuthString", response.BasicAuthString);
+        if (Remember)
+          await BrowserStorage.SetAsync("authstring", response.BasicAuthString);
+        else
+          await SessionStorage.SetAsync("authstring", response.BasicAuthString);
         
         NavigationManager.NavigateTo("/");
       }

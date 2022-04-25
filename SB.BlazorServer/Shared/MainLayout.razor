@@ -1,6 +1,8 @@
 ﻿@inherits LayoutComponentBase
 @inject NavigationManager NavigationManager
-@inject Blazored.LocalStorage.ILocalStorageService localStorage
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inject ProtectedLocalStorage BrowserStorage
+@inject ProtectedSessionStorage SessionStorage
 
 <PageTitle>SB.BlazorServer</PageTitle>
 
@@ -24,7 +26,8 @@
 
     private async Task doLogout()
     {
-        await localStorage.RemoveItemAsync("AuthString");
+        await BrowserStorage.DeleteAsync("authstring");
+        await SessionStorage.DeleteAsync("authstring");
         NavigationManager.NavigateTo("/login");
     }
 

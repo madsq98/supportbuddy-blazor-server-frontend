@@ -1,4 +1,3 @@
-using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using SB.BlazorServer.Data.Auth;
@@ -9,8 +8,6 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
-
-builder.Services.AddBlazoredLocalStorage();
 
 builder.Services.AddHttpClient();
 builder.Services.AddScoped<HttpClient>();
