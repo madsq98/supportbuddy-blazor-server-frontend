@@ -16,15 +16,14 @@ else
 {
     @if (tickets.Length > 0)
     {
-        <div class="table-responsive">
-            <table class="table table-striped" style="min-width:800px;">
+        <table class="table table-striped">
                 <thead class="table-dark">
                 <tr>
                     <th>ID</th>
                     <th>Status</th>
                     <th>Subject</th>
-                    <th>Submitted by</th>
-                    <th>Time of creation</th>
+                    <th class="d-none d-md-table-cell">Submitted by</th>
+                    <th class="d-none d-md-table-cell">Time of creation</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -34,13 +33,12 @@ else
                         <td>@ticket.Id</td>
                         <td>@ticket.Status</td>
                         <td>@ticket.Subject</td>
-                        <td>@ticket.LastName, @ticket.FirstName</td>
-                        <td>@ticket.TimeStamp</td>
+                        <td class="d-none d-md-table-cell">@ticket.LastName, @ticket.FirstName</td>
+                        <td class="d-none d-md-table-cell">@ticket.TimeStamp</td>
                     </tr>
                 }
                 </tbody>
             </table>
-        </div>
     }
     else
     {
