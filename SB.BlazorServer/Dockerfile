@@ -6,7 +6,7 @@ EXPOSE 443
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
 COPY ["SB.BlazorServer.csproj", "."]
-RUN dotnet restore "SB.BlazorServer.csproj"
+RUN dotnet restore --disable-parallel "SB.BlazorServer.csproj"
 COPY . .
 RUN dotnet build "SB.BlazorServer.csproj" -c Release -o /app/build
 
