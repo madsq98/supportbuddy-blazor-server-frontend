@@ -22,6 +22,7 @@ else
                 <tr>
                     <th>ID</th>
                     <th>Status</th>
+                    <th>Answers</th>
                     <th>Subject</th>
                     <th class="d-none d-md-table-cell">Submitted by</th>
                     <th class="d-none d-md-table-cell">Time of creation</th>
@@ -33,6 +34,7 @@ else
                     <tr class="sb-table-link" @onclick="@(() => NavigateToTicket(ticket.Id))">
                         <td>@ticket.Id</td>
                         <td>@ticket.Status</td>
+                        <td>@ticket.Answers.Count</td>
                         <td>@ticket.Subject</td>
                         <td class="d-none d-md-table-cell">@ticket.LastName, @ticket.FirstName</td>
                         <td class="d-none d-md-table-cell">@ticket.TimeStamp</td>
