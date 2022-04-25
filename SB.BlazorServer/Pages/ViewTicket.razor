@@ -20,7 +20,7 @@ else
     else
     {
         <div class="row">
-            <div class="col-12 col-md-2">
+            <div class="col-12 col-md-2 mb-3 order-1 order-md-1">
                 <div class="card">
                     <div class="card-header">
                         <strong>@currentTicket.FirstName @currentTicket.LastName</strong>
@@ -37,7 +37,7 @@ else
                 </div>
             </div>
             
-            <div class="col-12 col-md-8">
+            <div class="col-12 col-md-8 mb-3 order-3 order-md-2">
                 <div class="card">
                     <div class="card-header">
                         <strong>@currentTicket.Subject</strong>
@@ -53,7 +53,7 @@ else
                 </div>
             </div>
             
-            <div class="col-12 col-md-2">
+            <div class="col-12 col-md-2 mb-3 order-2 order-md-3">
                 <div class="card">
                     <div class="card-header">
                         <strong>Actions</strong>
@@ -98,21 +98,21 @@ else
                     </div>
                 </div>
                 <div class="row mb-3">
-                    <div class="col-2"></div>
-                    <div class="col-8 px-4">
-                        <textarea @bind="NewAnswer" class="form-control" rows="3" placeholder="Enter answer here..."></textarea>
+                    <div class="col-12 col-md-2"></div>
+                    <div class="col-12 col-md-8 px-4">
+                        <textarea @bind="NewAnswer" class="form-control" rows="4" placeholder="Enter answer here..."></textarea>
                     </div>
-                    <div class="col-2"></div>
+                    <div class="col-12 col-md-2"></div>
                 </div>
                 <div class="row">
-                    <div class="col-2"></div>
-                    <div class="col-4 px-4">
+                    <div class="col-12 col-md-2"></div>
+                    <div class="col-6 col-md-4 px-4">
                         <button class="btn btn-primary w-100" @onclick="@(async () => await SaveAnswer())">Save Answer</button>
                     </div>
-                    <div class="col-4 px-4">
+                    <div class="col-6 col-md-4 px-4">
                         <button class="btn btn-danger w-100" @onclick="SwitchView">Cancel</button>
                     </div>
-                    <div class="col-2"></div>
+                    <div class="col-12 col-md-2"></div>
                 </div>
             </div>
         </div>
