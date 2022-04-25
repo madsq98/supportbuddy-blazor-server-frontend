@@ -6,7 +6,7 @@ pipeline{
 	}
 	
     stages{
-        stage("Build API") {
+        stage("Build Frontend") {
 			when {
 				anyOf {
 					changeset "**"
