@@ -2,6 +2,8 @@
 @using SB.BlazorServer.Data.Ticket
 @inject TicketService Service
 
+<PageTitle>SupportBuddy - All Tickets</PageTitle>
+
 <h1>All Tickets</h1>
 
 <p>Overview of all support tickets</p>
@@ -51,6 +53,11 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        await Service.GetTicketsAsync();
+        await LoadItems();
+    }
+
+    private async Task LoadItems()
+    {
+        tickets = await Service.GetTicketsAsync();
     }
 }

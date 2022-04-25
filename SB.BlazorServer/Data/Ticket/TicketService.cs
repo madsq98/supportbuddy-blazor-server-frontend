@@ -16,12 +16,29 @@ public class TicketService
     {
         try
         {
-            Console.WriteLine(API_URL);
             return await _http.GetFromJsonAsync<Ticket[]>("");
         }
         catch
         {
             return Array.Empty<Ticket>();
+        }
+    }
+
+    public async Task<Ticket> PostTicketAsync(Ticket obj)
+    {
+        try
+        {
+            var response = await _http.PostAsJsonAsync("", obj);
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadFromJsonAsync<Ticket>();
+            }
+            
+            return null;
+        }
+        catch
+        {
+            return null;
         }
     }
 }

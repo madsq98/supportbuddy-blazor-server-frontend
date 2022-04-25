@@ -1,0 +1,99 @@
+﻿@page "/CreateTicket"
+@using SB.BlazorServer.Data.Ticket
+@inject TicketService Service
+@inject NavigationManager NavigationManager
+<PageTitle>SupportBuddy - Create Ticket</PageTitle>
+
+<h1>Create a ticket</h1>
+<p>Here you are able to create a support ticket manually, in case of an user calling on the phone etc.</p>
+
+<div class="row">
+    <div class="col-12 col-md-6">
+        <h4>User Information</h4>
+        <div class="input-group mb-3">
+            <span class="input-group-text sb-form-text">First Name</span>
+            <input @bind="FirstName" id="firstName" type="text" class="form-control" placeholder="First Name..."/>
+        </div>
+        <div class="input-group mb-3">
+            <span class="input-group-text sb-form-text">Last Name</span>
+            <input @bind="LastName" id="lastName" type="text" class="form-control" placeholder="Last Name..."/>
+        </div>
+        <div class="input-group mb-3">
+            <span class="input-group-text sb-form-text">E-mail</span>
+            <input @bind="Email" id="email" type="text" class="form-control" placeholder="E-mail..."/>
+        </div>
+        <div class="input-group mb-3">
+            <span class="input-group-text sb-form-text">Phone Number</span>
+            <input @bind="PhoneNumber" id="phoneNumber" type="tel" class="form-control" placeholder="Phone number..." />
+        </div>
+    </div>
+    <div class="col-12 col-md-6">
+        <h4>Ticket Content</h4>
+        <div class="input-group mb-3">
+            <span class="input-group-text sb-form-text">Subject</span>
+            <input @bind="Subject" id="subject" type="text" class="form-control" placeholder="Ticket subject..."/>
+        </div>
+        <label for="message" class="form-label">Message:</label>
+        <textarea @bind="Message" id="message" class="form-control" placeholder="Ticket message..." rows="4"></textarea>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12 col-md-6">
+        <button @onclick="@(async () => await DoSubmit())" class="btn btn-primary w-100">
+            Submit
+        </button>
+    </div>
+    <div class="col-12 col-md-6">
+        <button @onclick="DoReset" class="btn btn-danger w-100">
+            Reset
+        </button>
+    </div>
+</div>
+
+@code {
+    private string? FirstName;
+    private string? LastName;
+    private string? Email;
+    private string? PhoneNumber;
+    private string? Subject;
+    private string? Message;
+
+    private async Task DoSubmit()
+    {
+        if (
+            !string.IsNullOrWhiteSpace(FirstName) &&
+            !string.IsNullOrWhiteSpace(LastName) &&
+            !string.IsNullOrWhiteSpace(Email) &&
+            !string.IsNullOrWhiteSpace(PhoneNumber) &&
+            !string.IsNullOrWhiteSpace(Subject) &&
+            !string.IsNullOrWhiteSpace(Message)
+            )
+        {
+            var newTicket = new Ticket
+            {
+                FirstName = FirstName,
+                LastName = LastName,
+                Email = Email,
+                PhoneNumber = int.Parse(PhoneNumber),
+                Subject = Subject,
+                Message = Message
+            };
+
+            var response = await Service.PostTicketAsync(newTicket);
+            if (response != null && response.Id > 0)
+            {
+                NavigationManager.NavigateTo("alltickets");
+            }
+        }
+    }
+
+    private void DoReset()
+    {
+        FirstName = null;
+        LastName = null;
+        Email = null;
+        PhoneNumber = null;
+        Subject = null;
+        Message = null;
+    }
+}
