@@ -8,6 +8,14 @@ html, body {
     width:135px;
 }
 
+.sb-table-link {
+    cursor:pointer;
+}
+
+.sb-table-link:hover {
+    text-decoration: underline;
+}
+
 h1:focus {
     outline: none;
 }

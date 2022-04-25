@@ -1,0 +1,7 @@
+﻿@page "/ViewTicket/{Id:int}"
+<h1>Ticket #@Id</h1>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+}

@@ -1,6 +1,7 @@
 ﻿@page "/AllTickets"
 @using SB.BlazorServer.Data.Ticket
 @inject TicketService Service
+@inject NavigationManager NavigationManager
 
 <PageTitle>SupportBuddy - All Tickets</PageTitle>
 
@@ -29,7 +30,7 @@ else
                 <tbody>
                 @foreach (var ticket in tickets)
                 {
-                    <tr>
+                    <tr class="sb-table-link" @onclick="@(() => NavigateToTicket(ticket.Id))">
                         <td>@ticket.Id</td>
                         <td>@ticket.Status</td>
                         <td>@ticket.Subject</td>
@@ -59,5 +60,10 @@ else
     private async Task LoadItems()
     {
         tickets = await Service.GetTicketsAsync();
+    }
+
+    private void NavigateToTicket(int id)
+    {
+        NavigationManager.NavigateTo("/ViewTicket/" + id);
     }
 }
