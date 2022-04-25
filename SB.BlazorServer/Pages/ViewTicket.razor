@@ -2,6 +2,7 @@
 @using SB.BlazorServer.Data.Ticket
 @inject TicketService Service
 @inject NavigationManager NavigationManager
+@inject IJSRuntime JsRuntime
 
 <PageTitle>SupportBuddy - Ticket #@Id</PageTitle>
 
@@ -161,6 +162,8 @@ else
             {
                 await LoadTicket();
                 await SwitchView();
+
+                await JsRuntime.InvokeVoidAsync("ScrollToBottom");
             }
         }
     }
