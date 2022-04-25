@@ -1,4 +1,7 @@
-﻿<Router AppAssembly="@typeof(App).Assembly">
+﻿@inject NavigationManager NavigationManager
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
+
+<Router AppAssembly="@typeof(App).Assembly">
     <Found Context="routeData">
         <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)"/>
         <FocusOnNavigate RouteData="@routeData" Selector="h1"/>
@@ -10,3 +13,16 @@
         </LayoutView>
     </NotFound>
 </Router>
+
+@code {
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        var loginString = await localStorage.GetItemAsync<string>("AuthString");
+        if (loginString == null || loginString.Length <= 0)
+        {
+            NavigationManager.NavigateTo("/login");
+        }
+    }
+
+}
