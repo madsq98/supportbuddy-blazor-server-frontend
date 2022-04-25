@@ -1,13 +1,21 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using SB.BlazorServer.Data;
+using SB.BlazorServer.Data.Ticket;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
+
+builder.Services.AddHttpClient();
+builder.Services.AddScoped<HttpClient>();
+
 builder.Services.AddSingleton<WeatherForecastService>();
+
+builder.Services.AddHttpClient<TicketService>(client => 
+    client.BaseAddress = new Uri("http://vps.qvistgaard.me:8980/api/ticket/"));
 
 var app = builder.Build();
 

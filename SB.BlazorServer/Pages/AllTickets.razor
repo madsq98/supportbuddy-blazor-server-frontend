@@ -1,0 +1,56 @@
+﻿@page "/AllTickets"
+@using SB.BlazorServer.Data.Ticket
+@inject TicketService Service
+
+<h1>All Tickets</h1>
+
+<p>Overview of all support tickets</p>
+
+@if (tickets == null)
+{
+    <ShowLoadingComponent />
+}
+else
+{
+    @if (tickets.Length > 0)
+    {
+        <table class="table">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Status</th>
+                <th>Subject</th>
+                <th>Submitted by</th>
+                <th>Time of creation</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var ticket in tickets)
+            {
+                <tr>
+                    <td>@ticket.Id</td>
+                    <td>@ticket.Status</td>
+                    <td>@ticket.Subject</td>
+                    <td>@ticket.LastName, @ticket.FirstName</td>
+                    <td>@ticket.TimeStamp</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>
+            <em>No tickets found...</em>
+        </p>
+    }
+}
+
+@code {
+    private Ticket[]? tickets;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Service.GetTicketsAsync();
+    }
+}
