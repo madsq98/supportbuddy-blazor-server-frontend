@@ -1,7 +1,9 @@
 ﻿@inject NavigationManager NavigationManager
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@using SB.BlazorServer.Data.Auth
 @inject ProtectedLocalStorage BrowserStorage
 @inject ProtectedSessionStorage SessionStorage
+@inject AuthService AuthService
 
 <Router AppAssembly="@typeof(App).Assembly">
     <Found Context="routeData">
@@ -29,6 +31,10 @@
         if (loginString == null || loginString.Length <= 0)
         {
             NavigationManager.NavigateTo("/login");
+        }
+        else
+        {
+            AuthService.AuthString = loginString;
         }
     }
 

@@ -1,5 +1,33 @@
 @import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 
+#pageOverlay {
+    position: fixed; /* Sit on top of the page content */
+    width: 100%; /* Full width (cover the whole page) */
+    height: 100%; /* Full height (cover the whole page) */
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0,0,0,0.8); /* Black background with opacity */
+    z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
+}
+
+#bottomActionbar {
+    position:fixed;
+    width:100%;
+    height:450px;
+
+    bottom:0;
+    left:0;
+    right:0;
+
+    z-index: 5;
+}
+
+.hideElement {
+    display:none;
+}
+
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }

@@ -4,6 +4,7 @@ using System.Net.Http;
 public class AuthService
 {
     private HttpClient _http;
+    public static string AuthString;
 
     public AuthService(HttpClient http)
     {
@@ -17,7 +18,9 @@ public class AuthService
             var response = await _http.PostAsJsonAsync("authenticate", obj);
             if (response.IsSuccessStatusCode)
             {
-                return await response.Content.ReadFromJsonAsync<LoginReturnModel>();
+                var toReturn = await response.Content.ReadFromJsonAsync<LoginReturnModel>();
+                AuthString = toReturn.BasicAuthString;
+                return toReturn;
             }
 
             return null;

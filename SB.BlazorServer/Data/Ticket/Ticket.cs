@@ -18,5 +18,7 @@ public class Ticket
         
     public int PhoneNumber { get; set; }
     
+    public ICollection<Answer> Answers { get; set; }
+
     public DateTime TimeStamp { get; set; }
 }

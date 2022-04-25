@@ -1,7 +1,185 @@
 ﻿@page "/ViewTicket/{Id:int}"
+@using SB.BlazorServer.Data.Ticket
+@inject TicketService Service
+@inject NavigationManager NavigationManager
+
+<PageTitle>SupportBuddy - Ticket #@Id</PageTitle>
+
 <h1>Ticket #@Id</h1>
+
+@if (currentTicket == null)
+{
+    <ShowLoadingComponent />
+}
+else
+{
+    @if (currentTicket.Id == null || currentTicket.Id <= 0)
+    {
+        <EntityNotFound EntityName="ticket" />
+    }
+    else
+    {
+        <div class="row">
+            <div class="col-12 col-md-2">
+                <div class="card">
+                    <div class="card-header">
+                        <strong>@currentTicket.FirstName @currentTicket.LastName</strong>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item"><strong>E-mail:</strong> @currentTicket.Email</li>
+                            <li class="list-group-item"><strong>Phone:</strong> @currentTicket.PhoneNumber</li>
+                            <li class="list-group-item"><strong>Ticket Status:</strong> @currentTicket.Status</li>
+                        </ul>
+                    </div>
+                    <div class="card-footer">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-12 col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <strong>@currentTicket.Subject</strong>
+                    </div>
+                    <div class="card-body">
+                        <p>
+                            @currentTicket.Message
+                        </p>
+                    </div>
+                    <div class="card-footer">
+                        <small>Created: @currentTicket.TimeStamp</small>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-12 col-md-2">
+                <div class="card">
+                    <div class="card-header">
+                        <strong>Actions</strong>
+                    </div>
+                    <div class="card-body">
+                        <button disabled="@DisableButtons" @onclick="SwitchView" class="btn btn-primary w-100 mb-3">Add answer</button>
+                        <button disabled="@DisableButtons" @onclick="@(async () => await CloseTicket())"class="btn btn-warning w-100 mb-3">Close ticket</button>
+                        <button disabled="@(!DisableButtons)" @onclick="@(async () => await DeleteTicket())" class="btn btn-danger w-100">Delete ticket</button>
+                    </div>
+                    <div class="card-footer"></div>
+                </div>
+            </div>
+        </div>
+        
+        <hr />
+        
+        <div class="row mb-5">
+            <div class="col-12">
+                <h4>Answers</h4>
+                @foreach (var answer in currentTicket.Answers)
+                {
+                    <div class="card mb-3">
+                        <div class="card-header">
+                            @answer.AuthorFirstName @answer.AuthorLastName answered:
+                        </div>
+                        <div class="card-body">
+                            @answer.Message
+                        </div>
+                        <div class="card-footer">
+                            <small>@answer.TimeStamp</small>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+        
+        <div id="pageOverlay" class="@OverlayCssClass">
+            <div id="bottomActionbar" class="bg-light text-center pt-4 px-3">
+                <div class="row">
+                    <div class="col">
+                        <h2>Add answer</h2>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-2"></div>
+                    <div class="col-8 px-4">
+                        <textarea @bind="NewAnswer" class="form-control" rows="3" placeholder="Enter answer here..."></textarea>
+                    </div>
+                    <div class="col-2"></div>
+                </div>
+                <div class="row">
+                    <div class="col-2"></div>
+                    <div class="col-4 px-4">
+                        <button class="btn btn-primary w-100" @onclick="@(async () => await SaveAnswer())">Save Answer</button>
+                    </div>
+                    <div class="col-4 px-4">
+                        <button class="btn btn-danger w-100" @onclick="SwitchView">Cancel</button>
+                    </div>
+                    <div class="col-2"></div>
+                </div>
+            </div>
+        </div>
+    }
+}
 
 @code {
     [Parameter]
     public int Id { get; set; }
+
+    private Ticket? currentTicket;
+
+    private string? NewAnswer;
+    private bool hidePopupMenu = true;
+    private string? OverlayCssClass => hidePopupMenu ? "hideElement" : null;
+
+    private bool DisableButtons => (currentTicket != null && currentTicket.Status == "Closed");
+    
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadTicket();
+    }
+
+    private async Task LoadTicket()
+    {
+        currentTicket = await Service.GetTicketAsync(Id);
+    }
+    
+    private async Task SwitchView()
+    {
+        hidePopupMenu = !hidePopupMenu;
+        NewAnswer = null;
+    }
+
+    private async Task SaveAnswer()
+    {
+        if (!string.IsNullOrWhiteSpace(NewAnswer))
+        {
+            var newEntity = new AddAnswer
+            {
+                Message = NewAnswer
+            };
+
+            var returnObj = await Service.AddAnswerAsync(Id, newEntity);
+            if (returnObj != null && returnObj.Id == Id)
+            {
+                await LoadTicket();
+                await SwitchView();
+            }
+        }
+    }
+
+    private async Task CloseTicket()
+    {
+        var returnObj = await Service.CloseTicketAsync(Id);
+        if (returnObj != null && returnObj.Id == Id)
+        {
+            await LoadTicket();
+        }
+    }
+
+    private async Task DeleteTicket()
+    {
+        var returnObj = await Service.DeleteTicketAsync(Id);
+        if (returnObj != null && returnObj.Id == Id)
+        {
+            NavigationManager.NavigateTo("/alltickets");
+        }
+    }
 }

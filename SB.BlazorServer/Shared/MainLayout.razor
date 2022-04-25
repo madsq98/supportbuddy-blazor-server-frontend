@@ -1,8 +1,10 @@
 ﻿@inherits LayoutComponentBase
 @inject NavigationManager NavigationManager
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@using SB.BlazorServer.Data.Auth
 @inject ProtectedLocalStorage BrowserStorage
 @inject ProtectedSessionStorage SessionStorage
+@inject AuthService AuthService
 
 <PageTitle>SB.BlazorServer</PageTitle>
 
@@ -28,6 +30,7 @@
     {
         await BrowserStorage.DeleteAsync("authstring");
         await SessionStorage.DeleteAsync("authstring");
+        AuthService.AuthString = "";
         NavigationManager.NavigateTo("/login");
     }
 
