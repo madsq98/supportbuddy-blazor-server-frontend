@@ -79,11 +79,6 @@
             };
 
             var response = await Service.PostSupporterAsync(newSupporter);
-            Console.WriteLine(response.Email);
-            Console.WriteLine(response.FirstName);
-            Console.WriteLine(response.LastName);
-            Console.WriteLine(response.PhoneNumber);
-            Console.WriteLine(response.Username);
             if (response != null && response.Id > 0)
             {
                 NavigationManager.NavigateTo("allsupporters");

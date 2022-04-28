@@ -50,10 +50,10 @@ public class SupporterService
             {
                 return await response.Content.ReadFromJsonAsync<Models.Supporter>();
             }
-            
+
             return null;
         }
-        catch
+        catch(Exception e)
         {
             return null;
         }
