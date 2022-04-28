@@ -1,4 +1,4 @@
-﻿namespace SB.BlazorServer.Data.Ticket;
+﻿namespace SB.BlazorServer.Data.Models;
 
 public class Answer
 {

@@ -1,4 +1,6 @@
-﻿namespace SB.BlazorServer.Data.Auth;
+﻿using SB.BlazorServer.Data.Models;
+
+namespace SB.BlazorServer.Data.Auth;
 using System.Net.Http;
 
 public class AuthService

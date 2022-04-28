@@ -1,4 +1,4 @@
-﻿namespace SB.BlazorServer.Data.Auth;
+﻿namespace SB.BlazorServer.Data.Models;
 
 public class LoginReturnModel
 {

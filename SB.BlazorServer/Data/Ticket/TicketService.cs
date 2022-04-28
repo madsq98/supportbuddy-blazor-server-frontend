@@ -17,35 +17,35 @@ public class TicketService
         _navigationManager = navigationManager;
     }
     
-    public async Task<Ticket[]> GetTicketsAsync()
+    public async Task<Models.Ticket[]> GetTicketsAsync()
     {
         await AddAuthHeader();
         
         try
         {
-            return await _http.GetFromJsonAsync<Ticket[]>("");
+            return await _http.GetFromJsonAsync<Models.Ticket[]>("");
         }
         catch
         {
-            return Array.Empty<Ticket>();
+            return Array.Empty<Models.Ticket>();
         }
     }
 
-    public async Task<Ticket> GetTicketAsync(int id)
+    public async Task<Models.Ticket> GetTicketAsync(int id)
     {
         await AddAuthHeader();
 
         try
         {
-            return await _http.GetFromJsonAsync<Ticket>("" + id);
+            return await _http.GetFromJsonAsync<Models.Ticket>("" + id);
         }
         catch
         {
-            return new Ticket();
+            return new Models.Ticket();
         }
     }
 
-    public async Task<Ticket> PostTicketAsync(Ticket obj)
+    public async Task<Models.Ticket> PostTicketAsync(Models.Ticket obj)
     {
         await AddAuthHeader();
         
@@ -54,7 +54,7 @@ public class TicketService
             var response = await _http.PostAsJsonAsync("", obj);
             if (response.IsSuccessStatusCode)
             {
-                return await response.Content.ReadFromJsonAsync<Ticket>();
+                return await response.Content.ReadFromJsonAsync<Models.Ticket>();
             }
             
             return null;
@@ -65,7 +65,7 @@ public class TicketService
         }
     }
 
-    public async Task<Ticket> AddAnswerAsync(int id, AddAnswer obj)
+    public async Task<Models.Ticket> AddAnswerAsync(int id, AddAnswer obj)
     {
         await AddAuthHeader();
 
@@ -73,7 +73,7 @@ public class TicketService
         {
             var response = await _http.PostAsJsonAsync("" + id, obj);
             if (response.IsSuccessStatusCode)
-                return await response.Content.ReadFromJsonAsync<Ticket>();
+                return await response.Content.ReadFromJsonAsync<Models.Ticket>();
 
             
             return null;
@@ -84,15 +84,15 @@ public class TicketService
         }
     }
 
-    public async Task<Ticket> CloseTicketAsync(int id)
+    public async Task<Models.Ticket> CloseTicketAsync(int id)
     {
         await AddAuthHeader();
 
         try
         {
-            var response = await _http.PostAsJsonAsync(id + "/close", new Ticket());
+            var response = await _http.PostAsJsonAsync(id + "/close", new Models.Ticket());
             if (response.IsSuccessStatusCode)
-                return await response.Content.ReadFromJsonAsync<Ticket>();
+                return await response.Content.ReadFromJsonAsync<Models.Ticket>();
 
             
             return null;
@@ -103,7 +103,7 @@ public class TicketService
         }
     }
 
-    public async Task<Ticket> DeleteTicketAsync(int id)
+    public async Task<Models.Ticket> DeleteTicketAsync(int id)
     {
         await AddAuthHeader();
 
@@ -111,7 +111,7 @@ public class TicketService
         {
             var response = await _http.DeleteAsync("" + id);
             if (response.IsSuccessStatusCode)
-                return await response.Content.ReadFromJsonAsync<Ticket>();
+                return await response.Content.ReadFromJsonAsync<Models.Ticket>();
 
             return null;
         }
