@@ -1,0 +1,70 @@
+﻿@page "/AllSupporters"
+@using SB.BlazorServer.Data.Supporter
+@using SB.BlazorServer.Data.Models
+@inject SupporterService Service
+@inject NavigationManager NavigationManager
+
+<PageTitle>SupportBuddy - All Supporters</PageTitle>
+
+<h1>All Supporters</h1>
+
+<p>Overview of all supporters</p>
+
+@if (supporters == null)
+{
+    <ShowLoadingComponent />
+}
+else
+{
+    @if (supporters.Length > 0)
+    {
+        <table class="table table-striped">
+                <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th class="d-none d-md-table-cell">Name</th>
+                    <th>Phonenumber</th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var supporter in supporters)
+                {
+                    <tr class="sb-table-link" @onclick="@(() => NavigateToSupporter(supporter.Id))">
+                        <td>@supporter.Id</td>
+                        <td>@supporter.Username</td>
+                        <td>@supporter.Email</td>
+                        <td class="d-none d-md-table-cell">@supporter.LastName, @supporter.FirstName</td>
+                        <td>@supporter.PhoneNumber</td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+    }
+    else
+    {
+        <p>
+            <em>No supporters found...</em>
+        </p>
+    }
+}
+@code {
+    private Supporter[]? supporters;
+    
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadItems();
+    }
+
+    private async Task LoadItems()
+    {
+        supporters = await Service.GetSupportersAsync();
+    }
+
+    private void NavigateToSupporter(int id)
+    {
+        NavigationManager.NavigateTo("/ViewSupporter/" + id);
+    }
+    
+}

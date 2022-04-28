@@ -1,0 +1,102 @@
+﻿@page "/CreateSupporter"
+@using SB.BlazorServer.Data.Supporter
+@using SB.BlazorServer.Data.Models
+@inject SupporterService Service
+@inject NavigationManager NavigationManager
+<PageTitle>SupportBuddy - Create Supporter</PageTitle>
+
+<h1>Create a Supporter</h1>
+
+<div class="row">
+    <div class="col-12 col-md-6">
+        <h4>User Information</h4>
+        <div class="input-group mb-3">
+            <span class="input-group-text sb-form-text">First Name</span>
+            <input @bind="FirstName" id="firstName" type="text" class="form-control" placeholder="First Name..."/>
+        </div>
+        <div class="input-group mb-3">
+            <span class="input-group-text sb-form-text">Last Name</span>
+            <input @bind="LastName" id="lastName" type="text" class="form-control" placeholder="Last Name..."/>
+        </div>
+        <div class="input-group mb-3">
+            <span class="input-group-text sb-form-text">E-mail</span>
+            <input @bind="Email" id="email" type="text" class="form-control" placeholder="E-mail..."/>
+        </div>
+        <div class="input-group mb-3">
+            <span class="input-group-text sb-form-text">Phone Number</span>
+            <input @bind="PhoneNumber" id="phoneNumber" type="tel" class="form-control" placeholder="Phone number..." />
+        </div>
+        <div class="input-group mb-3">
+             <span class="input-group-text sb-form-text">Username</span>
+             <input @bind="UserName" id="userName" type="text" class="form-control" placeholder="Username..." />
+        </div>
+        <div class="input-group mb-3">
+            <span class="input-group-text sb-form-text">Password</span>
+            <input @bind="Password" id="password" type="password" class="form-control" placeholder="Password..." />
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12 col-md-6">
+        <button @onclick="@(async () => await DoSubmit())" class="btn btn-primary w-100 mb-3">
+            Submit
+        </button>
+    </div>
+    <div class="col-12 col-md-6">
+        <button @onclick="DoReset" class="btn btn-danger w-100 mb-3">
+            Reset
+        </button>
+    </div>
+</div>
+
+@code {
+    private string? FirstName;
+    private string? LastName;
+    private string? Email;
+    private string? PhoneNumber;
+    private string? UserName;
+    private string? Password;
+    
+    private async Task DoSubmit()
+    {
+        if (
+            !string.IsNullOrWhiteSpace(FirstName) &&
+            !string.IsNullOrWhiteSpace(LastName) &&
+            !string.IsNullOrWhiteSpace(Email) &&
+            !string.IsNullOrWhiteSpace(PhoneNumber) &&
+            !string.IsNullOrWhiteSpace(UserName) &&
+            !string.IsNullOrWhiteSpace(Password)
+            )
+        {
+            var newSupporter = new CreateSupporterModel()
+            {
+                FirstName = FirstName,
+                LastName = LastName,
+                Email = Email,
+                PhoneNumber = int.Parse(PhoneNumber),
+                Username = UserName,
+                Password = Password,
+            };
+
+            var response = await Service.PostSupporterAsync(newSupporter);
+            Console.WriteLine(response.Email);
+            Console.WriteLine(response.FirstName);
+            Console.WriteLine(response.LastName);
+            Console.WriteLine(response.PhoneNumber);
+            Console.WriteLine(response.Username);
+            if (response != null && response.Id > 0)
+            {
+                NavigationManager.NavigateTo("allsupporters");
+            }
+        }
+    }
+
+    private void DoReset() {
+        FirstName = null;
+        LastName = null;
+        Email = null;
+        PhoneNumber = null;
+        UserName = null;
+        Password = null;
+    }
+}

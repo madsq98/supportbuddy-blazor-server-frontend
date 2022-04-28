@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using SB.BlazorServer.Data.Auth;
+using SB.BlazorServer.Data.Supporter;
 using SB.BlazorServer.Data.Ticket;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,6 +15,9 @@ builder.Services.AddScoped<HttpClient>();
 
 builder.Services.AddHttpClient<TicketService>(client => 
     client.BaseAddress = new Uri("http://vps.qvistgaard.me:8980/api/ticket/"));
+
+builder.Services.AddHttpClient<SupporterService>(client => 
+    client.BaseAddress = new Uri("http://vps.qvistgaard.me:8980/api/auth/"));
 
 builder.Services.AddHttpClient<AuthService>(client => 
     client.BaseAddress = new Uri("http://vps.qvistgaard.me:8980/api/auth/"));
