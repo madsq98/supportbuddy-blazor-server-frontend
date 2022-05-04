@@ -44,12 +44,14 @@ else
                 <!-- send message field -->
                 <div class="row">
                     <div class="col-10">
-                        <input type="text" class="form-control" placeholder="Type your message here..." />
+                        <input type="text" class="form-control form-control-lg" placeholder="Type your message here..." />
                     </div>
                     <div class="col-2">
-                        <button class="btn btn-primary w-100">Send</button>
+                        <button class="btn btn-lg btn-primary w-100">Send</button>
                     </div>
                 </div>
+                
+                <hr />
                 
                 @foreach (var msg in currentEntity.Messages)
                 {
