@@ -120,6 +120,8 @@ else
             var received = await _webSocket.ReceiveAsync(buffer, disposalTokenSource.Token);
             var receivedAsText = Encoding.Default.GetString(buffer.Array, 0, received.Count);
 
+            newMessage = null;
+
             await LoadEntity();
             StateHasChanged();
         }
