@@ -1,6 +1,11 @@
 ﻿@page "/ViewLiveChat/{Id:int}"
 @using SB.BlazorServer.Data.LiveChat
 @using SB.BlazorServer.Data.Models
+@using System.Net.WebSockets
+@using System.Text
+@using System.Threading
+@using SB.BlazorServer.Data.Auth
+@implements IDisposable
 @inject LiveChatService Service
 @inject NavigationManager NavigationManager
 @inject IJSRuntime JsRuntime
@@ -8,6 +13,7 @@
 <PageTitle>SupportBuddy - Live Chat #@Id</PageTitle>
 
 <h1>Live Chat #@Id</h1>
+<p>Websocket State: @_webSocket.State</p>
 
 @if (currentEntity == null)
 {
@@ -44,10 +50,10 @@ else
                 <!-- send message field -->
                 <div class="row">
                     <div class="col-10">
-                        <input type="text" class="form-control form-control-lg" placeholder="Type your message here..." />
+                        <input @bind="newMessage" type="text" class="form-control form-control-lg" placeholder="Type your message here..." />
                     </div>
                     <div class="col-2">
-                        <button class="btn btn-lg btn-primary w-100">Send</button>
+                        <button @onclick="SendMessageAsync" class="btn btn-lg btn-primary w-100">Send</button>
                     </div>
                 </div>
                 
@@ -76,14 +82,52 @@ else
 
     private LiveChat? currentEntity;
 
+    private string? newMessage;
+
+    CancellationTokenSource disposalTokenSource = new CancellationTokenSource();
+    ClientWebSocket _webSocket = new ClientWebSocket();
+
     protected override async Task OnInitializedAsync()
     {
         await LoadEntity();
+
+        _webSocket.Options.SetRequestHeader("Authorization", "Basic " + AuthService.AuthString);
+        
+        await _webSocket.ConnectAsync(new Uri("ws://vps.qvistgaard.me:8980/ws/" + Id), disposalTokenSource.Token);
+        _ = ReceieveLoop();
     }
 
     private async Task LoadEntity()
     {
         currentEntity = await Service.GetLiveChatAsync(Id);
         currentEntity.Messages = currentEntity.Messages.Reverse().ToList();
+    }
+
+    private async Task SendMessageAsync()
+    {
+        if (string.IsNullOrWhiteSpace(newMessage))
+            return;
+        
+        var dataToSend = new ArraySegment<byte>(Encoding.Default.GetBytes(newMessage));
+        await _webSocket.SendAsync(dataToSend, WebSocketMessageType.Text, true, disposalTokenSource.Token);
+    }
+
+    private async Task ReceieveLoop()
+    {
+        var buffer = new ArraySegment<byte>(new byte[1024]);
+        while (!disposalTokenSource.IsCancellationRequested)
+        {
+            var received = await _webSocket.ReceiveAsync(buffer, disposalTokenSource.Token);
+            var receivedAsText = Encoding.Default.GetString(buffer.Array, 0, received.Count);
+
+            await LoadEntity();
+            StateHasChanged();
+        }
+    }
+
+    public void Dispose()
+    {
+        disposalTokenSource.Cancel();
+        _ = _webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Leaving", CancellationToken.None);
     }
 }
