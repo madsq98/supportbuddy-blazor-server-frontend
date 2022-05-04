@@ -1,0 +1,69 @@
+﻿@page "/AllLiveChats"
+@using SB.BlazorServer.Data.Models
+@using SB.BlazorServer.Data.LiveChat
+@inject LiveChatService Service
+@inject NavigationManager NavigationManager
+
+<PageTitle>SupportBuddy - All Livechats</PageTitle>
+
+<h1>All Livechats</h1>
+
+<p>Overview of all livechats</p>
+
+@if (_liveChats == null)
+{
+    <ShowLoadingComponent />
+}
+else
+{
+    @if (_liveChats.Length > 0)
+    {
+        <table class="table table-striped">
+            <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Status</th>
+                <th>Recipient</th>
+                <th>No. of answers</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var livechat in _liveChats)
+            {
+                <tr class="sb-table-link" @onclick="@(() => NavigateTo(livechat.Id))">
+                    <td>@livechat.Id</td>
+                    <td>@livechat.Status</td>
+                    <td>@livechat.FirstName @livechat.LastName</td>
+                    <td>@livechat.Messages.Count</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>
+            <em>No livechats found...</em>
+        </p>
+    }
+}
+
+
+@code {
+    private LiveChat[]? _liveChats;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadItems();
+    }
+
+    private async Task LoadItems()
+    {
+        _liveChats = await Service.GetLiveChatsAsync();
+    }
+
+    private void NavigateTo(int id)
+    {
+        NavigationManager.NavigateTo("/ViewLiveChat/" + id);
+    }
+}

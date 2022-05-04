@@ -1,0 +1,87 @@
+﻿@page "/ViewLiveChat/{Id:int}"
+@using SB.BlazorServer.Data.LiveChat
+@using SB.BlazorServer.Data.Models
+@inject LiveChatService Service
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JsRuntime
+
+<PageTitle>SupportBuddy - Live Chat #@Id</PageTitle>
+
+<h1>Live Chat #@Id</h1>
+
+@if (currentEntity == null)
+{
+    <ShowLoadingComponent />
+}
+else
+{
+    @if (currentEntity.Id == null || currentEntity.Id <= 0)
+    {
+        <EntityNotFound EntityName="LiveChat" />
+    }
+    else
+    {
+        <div class="row">
+            <div class="col-12 col-md-3">
+                <!-- author information -->
+                
+                <div class="card">
+                    <div class="card-header">
+                        <strong>@currentEntity.FirstName @currentEntity.LastName</strong>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item"><strong>E-mail:</strong> @currentEntity.Email</li>
+                            <li class="list-group-item"><strong>Phone:</strong> @currentEntity.PhoneNumber</li>
+                            <li class="list-group-item"><strong>Chat Status:</strong> @currentEntity.Status</li>
+                        </ul>
+                    </div>
+                    <div class="card-footer">
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-9">
+                <!-- send message field -->
+                <div class="row">
+                    <div class="col-10">
+                        <input type="text" class="form-control" placeholder="Type your message here..." />
+                    </div>
+                    <div class="col-2">
+                        <button class="btn btn-primary w-100">Send</button>
+                    </div>
+                </div>
+                
+                @foreach (var msg in currentEntity.Messages)
+                {
+                    <div class="card mb-3">
+                        <div class="card-header">@msg.FirstName @msg.LastName answered:</div>
+                        <div class="card-body">
+                            @msg.Message
+                        </div>
+                        <div class="card-footer">
+                            <small>@msg.Timestamp</small>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+}
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private LiveChat? currentEntity;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadEntity();
+    }
+
+    private async Task LoadEntity()
+    {
+        currentEntity = await Service.GetLiveChatAsync(Id);
+        currentEntity.Messages = currentEntity.Messages.Reverse().ToList();
+    }
+}

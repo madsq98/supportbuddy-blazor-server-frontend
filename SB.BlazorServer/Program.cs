@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using SB.BlazorServer.Data.Auth;
+using SB.BlazorServer.Data.LiveChat;
 using SB.BlazorServer.Data.Supporter;
 using SB.BlazorServer.Data.Ticket;
 
@@ -21,6 +22,9 @@ builder.Services.AddHttpClient<SupporterService>(client =>
 
 builder.Services.AddHttpClient<AuthService>(client => 
     client.BaseAddress = new Uri("http://vps.qvistgaard.me:8980/api/auth/"));
+
+builder.Services.AddHttpClient<LiveChatService>(client =>
+    client.BaseAddress = new Uri("http://vps.qvistgaard.me:8980/api/livechat/"));
 
 var app = builder.Build();
 
