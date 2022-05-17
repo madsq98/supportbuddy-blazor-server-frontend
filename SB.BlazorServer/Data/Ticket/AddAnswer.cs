@@ -3,4 +3,6 @@
 public class AddAnswer
 {
     public string Message { get; set; }
+    
+    public int? AttachmentId { get; set; }
 }

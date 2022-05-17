@@ -201,6 +201,11 @@ else
                 Message = NewAnswer
             };
 
+            if (UploadedAttachmentId > 0)
+            {
+                newEntity.AttachmentId = UploadedAttachmentId;
+            }
+
             var returnObj = await Service.AddAnswerAsync(Id, newEntity);
             if (returnObj != null && returnObj.Id == Id)
             {
