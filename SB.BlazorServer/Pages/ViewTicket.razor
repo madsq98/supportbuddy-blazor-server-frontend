@@ -170,7 +170,7 @@ else
     private bool AttachmentRemoveButtonDisabled = true;
     private string AttachmentButtonClass = "btn-primary";
     private string? AttachmentFileField;
-    private StreamContent fileContent;
+    private byte[] FileContent;
     private string fileName;
 
     private int UploadedAttachmentId = -1;
@@ -239,7 +239,12 @@ else
     {
         long maxFileSize = 5000000;
         await Task.Delay(1);
-        fileContent = new StreamContent(obj.File.OpenReadStream(maxFileSize));
+
+        var buffer = new byte[obj.File.Size];
+        var fileContent = new StreamContent(obj.File.OpenReadStream(maxFileSize));
+        buffer = await fileContent.ReadAsByteArrayAsync();
+
+        FileContent = buffer;
         fileName = obj.File.Name;
         StateHasChanged();
     }
@@ -258,7 +263,7 @@ else
         AttachmentButtonDisabled = true;
         
         using var content = new MultipartFormDataContent();
-        content.Add(content: fileContent,name: "\"file\"",fileName:fileName);
+        content.Add(content: new ByteArrayContent(FileContent),name: "\"file\"",fileName:fileName);
         var returnContent = await AttachmentService.UploadFileAsync(content);
 
         if (returnContent != null && returnContent.Id > 0)
