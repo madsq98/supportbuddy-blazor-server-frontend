@@ -1,9 +1,11 @@
 ﻿@page "/ViewTicket/{Id:int}"
 @using SB.BlazorServer.Data.Ticket
 @using SB.BlazorServer.Data.Models
+@using SB.BlazorServer.Data.Attachment
 @inject TicketService Service
 @inject NavigationManager NavigationManager
 @inject IJSRuntime JsRuntime
+@inject AttachmentService AttachmentService
 
 <PageTitle>SupportBuddy - Ticket #@Id</PageTitle>
 
@@ -106,6 +108,36 @@ else
                     </div>
                     <div class="col-12 col-md-2"></div>
                 </div>
+                <div class="row mb-3">
+                    <div class="col-12 col-md-2"></div>
+                    <div class="col-12 col-md-8 px-4">
+                        <div class="accordion accordion-flush border-dark" id="attachmentAccordion">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="accordHeaderOne">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#accordCollapseOne" aria-expanded="false" aria-controls="accordCollapseOne">
+                                        Add an attachment
+                                    </button>
+                                </h2>
+                                <div id="accordCollapseOne" class="accordion-collapse collapse" aria-labelledby="accordHeaderOne" data-bs-parent="#attachmentAccordion">
+                                    <div class="accordion-body">
+                                        <div class="row">
+                                            <div class="col-12 col-md-8">
+                                                <InputFile @key="AttachmentFileField" OnChange="OnInputFileChange" class="form-control" />
+                                            </div>
+                                            <div class="col-12 col-md-2">
+                                                <button @onclick="@(async () => await UploadAttachment())" class="btn @AttachmentButtonClass w-100" disabled="@AttachmentButtonDisabled">@AttachmentButtonText</button>
+                                            </div>
+                                            <div class="col-12 col-md-2">
+                                                <button @onclick="RemoveAttachment" class="btn btn-danger w-100" disabled="@AttachmentRemoveButtonDisabled">Remove</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-2"></div>
+                </div>
                 <div class="row">
                     <div class="col-12 col-md-2"></div>
                     <div class="col-6 col-md-4 px-4">
@@ -132,9 +164,20 @@ else
     private string? OverlayCssClass => hidePopupMenu ? "hideElement" : null;
 
     private bool DisableButtons => (currentTicket != null && currentTicket.Status == "Closed");
+
+    private string AttachmentButtonText = "Upload";
+    private bool AttachmentButtonDisabled = false;
+    private bool AttachmentRemoveButtonDisabled = true;
+    private string AttachmentButtonClass = "btn-primary";
+    private string? AttachmentFileField;
+    private StreamContent fileContent;
+    private string fileName;
+
+    private int UploadedAttachmentId = -1;
     
     protected override async Task OnInitializedAsync()
     {
+        AttachmentButtonClass = AttachmentButtonDisabled ? "btn-success" : "btn-primary";
         await LoadTicket();
     }
 
@@ -185,5 +228,55 @@ else
         {
             NavigationManager.NavigateTo("/alltickets");
         }
+    }
+
+    private async Task OnInputFileChange(InputFileChangeEventArgs obj)
+    {
+        long maxFileSize = 5000000;
+        await Task.Delay(1);
+        fileContent = new StreamContent(obj.File.OpenReadStream(maxFileSize));
+        fileName = obj.File.Name;
+        StateHasChanged();
+    }
+
+    private void RemoveAttachment()
+    {
+        UploadedAttachmentId = -1;
+        AttachmentFileField = null;
+        ResetAttachmentButtons();
+    }
+
+    private async Task UploadAttachment()
+    {
+        Console.WriteLine("RUNNING UPLOAD");
+        AttachmentButtonText = "Uploading...";
+        AttachmentButtonDisabled = true;
+        
+        using var content = new MultipartFormDataContent();
+        content.Add(content: fileContent,name: "\"file\"",fileName:fileName);
+        var returnContent = await AttachmentService.UploadFileAsync(content);
+
+        if (returnContent != null && returnContent.Id > 0)
+        {
+            UploadedAttachmentId = returnContent.Id;
+            AttachmentButtonText = "Uploaded!";
+            AttachmentButtonClass = "btn-success";
+            AttachmentRemoveButtonDisabled = false;
+
+            return;
+        }
+
+        AttachmentButtonText = "Failed!";
+        await Task.Delay(2500);
+        
+        ResetAttachmentButtons();
+    }
+
+    private void ResetAttachmentButtons()
+    {
+        AttachmentButtonClass = "btn-primary";
+        AttachmentButtonDisabled = false;
+        AttachmentButtonText = "Upload";
+        AttachmentRemoveButtonDisabled = true;
     }
 }

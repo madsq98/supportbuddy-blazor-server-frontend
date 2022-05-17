@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using SB.BlazorServer.Data.Attachment;
 using SB.BlazorServer.Data.Auth;
 using SB.BlazorServer.Data.LiveChat;
 using SB.BlazorServer.Data.Supporter;
@@ -25,6 +26,9 @@ builder.Services.AddHttpClient<AuthService>(client =>
 
 builder.Services.AddHttpClient<LiveChatService>(client =>
     client.BaseAddress = new Uri("http://vps.qvistgaard.me:8980/api/livechat/"));
+
+builder.Services.AddHttpClient<AttachmentService>(client =>
+    client.BaseAddress = new Uri("http://vps.qvistgaard.me:8980/api/attachment"));
 
 var app = builder.Build();
 
