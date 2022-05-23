@@ -87,7 +87,17 @@ else
                             @answer.Message
                         </div>
                         <div class="card-footer">
-                            <small>@answer.TimeStamp</small>
+                            <div class="row">
+                                <div class="col-6">
+                                    <small>@answer.TimeStamp</small>
+                                </div>
+                                <div class="col-6">
+                                    @if (@answer.AttachmentUrl != null && @answer.AttachmentUrl.Length > 0)
+                                    {
+                                        <small><a href="@answer.AttachmentUrl">View Attachment</a></small>
+                                    }
+                                </div>
+                            </div>
                         </div>
                     </div>
                 }
@@ -258,7 +268,6 @@ else
 
     private async Task UploadAttachment()
     {
-        Console.WriteLine("RUNNING UPLOAD");
         AttachmentButtonText = "Uploading...";
         AttachmentButtonDisabled = true;
         

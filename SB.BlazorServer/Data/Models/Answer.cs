@@ -9,6 +9,8 @@ public class Answer
     public string AuthorLastName { get; set; }
         
     public string Message { get; set; }
+    
+    public string? AttachmentUrl { get; set; }
         
     public DateTime TimeStamp { get; set; }
 }
